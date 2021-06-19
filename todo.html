@@ -6,9 +6,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
     <title>Document</title>
     <style>
-       body{
-           outline: none;
-       }
+        a,input,button{outline: none; -webkit-tap-highlight-color: rgba(255, 255, 255, 0); -webkit-focus-ring-color: rgba(0, 0, 0, 0);}
         #dataArea{
             margin:1rem auto;
             font-size: 1.5rem;
@@ -53,6 +51,12 @@
         }
         #inputID,#inputED{
             border-color: darkolivegreen;
+            box-sizing: border-box;
+            width: 45%;
+        }
+        #clickTodo{
+            box-sizing: border-box;
+            height: 61%;
         }
         .custom-btn {
            
@@ -177,7 +181,7 @@
         border-bottom: 1px solid black;
     }
     #itemTxt{
-        font-size: 0.8rem;
+        font-size:1rem;
         color:black;
         text-align: center;
        margin-top: 0.1rem;
