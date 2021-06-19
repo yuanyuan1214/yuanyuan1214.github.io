@@ -233,7 +233,7 @@
         cursor:pointer;
         color: rgb(128, 122, 122);
         text-decoration:none;
-         /* margin-left: 1rem; 移动端注释*/
+        margin-left: 0rem; 
        
    }
    #undoButton:active {
@@ -357,7 +357,7 @@
     }
     </style>
 </head>
-<body>
+<body ontouchstart="">
     <div id="dataArea">
         <div id="preDate" class="date-arrow">
             &lt
@@ -491,7 +491,25 @@
     </div>
     <div id="footer">CopyRight@caifangjunyan </div>
     <script>
-        
+        function isMobile(){
+            if( navigator.userAgent.match(/Android/i)
+                || navigator.userAgent.match(/webOS/i)
+                || navigator.userAgent.match(/iPhone/i)
+                || navigator.userAgent.match(/iPad/i)
+                || navigator.userAgent.match(/iPod/i)
+                || navigator.userAgent.match(/BlackBerry/i)
+                || navigator.userAgent.match(/Windows Phone/i)
+            )return true;
+            return false;
+        }
+        if(isMobile())
+        {
+            document.getElementById("undoButton").style.marginLeft="0rem";
+        }
+        else
+        {
+            document.getElementById("undoButton").style.marginLeft="1rem";
+        }
         const todo=function clicktodo(){
             var valid=true;
             var newtxt=document.getElementById("inputTodo").value;
