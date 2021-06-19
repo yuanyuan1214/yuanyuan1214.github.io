@@ -107,9 +107,10 @@
            
             background-color: rgb(239, 241, 204);
         }
-       
-        .list-item:hover{
+        @media(hover: hover) and (pointer: fine){
+            .list-item:hover{
             background-color: rgb(201, 200, 171);
+        }
         }
         .list-item-check{
             float: left;
@@ -233,7 +234,7 @@
         cursor:pointer;
         color: rgb(128, 122, 122);
         text-decoration:none;
-        margin-left: 1rem;
+        /* margin-left: 1rem; 移动端注释掉*/
        
    }
    #undoButton:active {
