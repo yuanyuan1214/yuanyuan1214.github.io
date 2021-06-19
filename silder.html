@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>滚动条</title>
+    <style>
+    *{
+        padding: 0;
+        margin: 0;
+    }
+    html,body{
+        width: 100%;
+        height: 100%;
+    }
+    .wrapper{
+        position: absolute;
+        left: 50%;
+        top:50%;
+        transform: translate(-50%,-50%);
+        width: 800px;
+        height: 700px;
+        border: 1px solid #000;
+    }
+    .view_box{
+        position: absolute;
+        left: 100px;
+        top:50%;
+        transform: translateY(-50%);
+        width:600px;
+        height: 500px;
+        background-color: rgba(25, 25, 25,.7);
+        /* overflow: hidden; */
+        overflow: auto;
+    }
+    .content{
+        position: absolute;
+        top: 0;
+        width: 100%;
+        background-color: #abcdef;
+        transition: all 0.016s linear;
+
+    }
+    .content div{
+        height: 100px;
+        background-color: #f40;
+    }
+    .bar_box{
+        position: absolute;
+        right: 90px;
+        top:50%;
+        transform: translateY(-50%);
+        height: 500px;
+        width: 4px;
+        border-radius: 2px;
+        background-color: rgba(25, 25, 25,.7);
+        overflow: hidden;
+    }
+    .bar{
+        position: absolute;
+        top:0;
+        height: 20px;
+        width: 100%;
+        border-radius:2px; 
+        background-color: rgb(197, 179, 179);
+        transition: all 0.016s linear;
+    }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="view_box">
+            <div class="content">
+               <div>这是内容</div>
+               <div>这是内容</div>
+               <div>这是内容</div>
+               <div>这是内容</div>
+               <div>这是内容</div>
+               <div>这是内容</div>
+               <div>这是内容</div>
+               <div>这是内容</div>
+               <div>这是内容</div>
+               <div>这是内容</div>
+               <div>这是内容</div>
+               <div>这是内容</div>
+               <div>这是内容</div>
+               <div>这是内容</div>
+               <div>这是内容</div>
+               <div>这是内容</div>
+               <div>这是内容</div>
+               <div>这是内容</div>
+               <div>这是内容</div>
+               <div>这是内容</div>
+            </div>
+        </div>
+        <!-- <div class="bar_box">
+            <div class="bar"></div>
+        </div> -->
+    </div>
+
+    <script>
+        
+        // var wrapper = document.getElementsByClassName('wrapper')[0];
+        // //获取展示内容区的区域
+        // var view_box = document.getElementsByClassName('view_box')[0];
+        // //获取展示内容区的区域的大小
+        // var view_box_height = view_box.offsetHeight;
+        // //获取内容区
+        // var content = document.getElementsByClassName('content')[0];
+        // //获取内容区的实际高度
+        // var content_height = content.offsetHeight;
+        // //获取滑道
+        // var bar_box = document.getElementsByClassName('bar_box')[0];
+        // //获取滑道的高度
+        // var bar_box_height = bar_box.offsetHeight;
+        // //获取滚动条
+        // var bar = document.getElementsByClassName('bar')[0];
+        
+        // //求 滚动条的高度
+
+        // //当展示的内容区的大小刚好展示内容区域时，滚动条的高度就是滑道的高度
+        // if(view_box_height / content_height < 1) {
+        //     bar.style.height = (view_box_height / content_height) * bar_box_height + 'px';
+        // } else {
+        //     bar.style.height = bar_box_height + 'px';
+        // }
+
+        // //绑定事件(做兼容处理)
+        // wrapper.onmousewheel = function (e){
+        // //    e.wheelDelta < 0 //(-120)  向下
+        // //    e.wheelDelta > 0 //(120)  向上
+        // scrollRoll(e);
+        // }
+        // //兼容  Firefox 
+        // wrapper.addEventListener('DOMMouseScroll',function (e) {
+        //     // e.detail > 0  //(3)  滑轮向下滚动
+        //     // e.detail < 0  //(-3)  滑轮向上滚动
+        //     scrollRoll(e);
+        // },false)
+
+
+        // function scrollRoll (e) {
+        //     e = e || window.event;
+        //     if (e.detail > 0) {
+        //         down();
+        //     } else if (e.detail < 0) {
+        //         up();
+        //     }
+
+        //     if (e.wheelDelta > 0) {
+        //         up();
+        //     } else if (e.wheelDelta < 0) {
+        //         down();
+        //     }
+        // }
+        // //滑轮向下滚动
+        // function down () {
+        //     var speed = 8;
+        //     if (bar.offsetTop >= bar_box_height - bar.offsetHeight) {
+        //         bar.style.top = bar_box_height - bar.offsetHeight + 'px';
+        //         //注意：内容区应该向上移动
+        //         content.style.top = - (content_height - view_box_height) + 'px';
+        //     } else {
+        //         bar.style.top = bar.offsetTop + speed + 'px';
+        //         content.style.top = - bar.offsetTop / (bar_box_height - bar.offsetHeight) * (content_height - view_box_height) + 'px';
+        //     }
+        // }
+        // //滑轮向上滚动
+        // function up () {
+        //     var speed = 8;
+        //     if (bar.offsetTop <= 0) {
+        //         bar.style.top = 0 + 'px';
+        //         content.style.top = 0 + 'px';
+        //     } else {
+        //         bar.style.top = bar.offsetTop - speed + 'px';
+        //         content.style.top = - bar.offsetTop / (bar_box_height - bar.offsetHeight) * (content_height - view_box_height) + 'px';
+        //     }
+        // }
+   </script>
+</body>
+</html>
