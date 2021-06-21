@@ -357,7 +357,7 @@
    } */
    .quadrant-item-text{
        box-sizing: border-box;
-       max-width: 75%;
+       max-width: 65%;
        height: 1.5rem;
        line-height: 1.5rem;
        overflow:auto;
@@ -371,7 +371,7 @@
    }
    .quadrant-item-emergency{
        color:rgb(95, 188, 216); 
-       margin-right: 1rem;
+       margin-right: 1.5rem;
    }
    #footer {
     position: fixed;
@@ -500,6 +500,15 @@
                 else
                 {
                     thisTimeArray=new Array();
+                    //现在就放进去
+                    var saveDate={
+                        year:year,
+                        month:month,
+                        day:day,
+                        record:thisTimeArray
+                    };
+                    list.push(saveDate);
+                    localStorage.dayData=JSON.stringify(list); 
                 }
             }
         } else {
@@ -545,6 +554,7 @@
             //数据重置
             thisTimeNum=0;
             thisTimeActive=0;
+            updateItemTxt(0);
             //清空现有元素
             var tq=document.getElementById("item-box-overview");
             while(tq.hasChildNodes()) 
@@ -751,6 +761,7 @@
                     var list=JSON.parse(localStorage.dayData);
                     list[list.length-1+latestTimeStep].record.push(newItem);
                     localStorage.dayData=JSON.stringify(list); 
+                    return;
                 }
                 else
                 {
@@ -1276,7 +1287,7 @@
 });
 
 //保存某时间下数据
-function currentPageSave()
+function currentPageSave()   
 {
     if(timeStep==0)
     {
@@ -1307,18 +1318,31 @@ function currentPageSave()
         localStorage.dayData=JSON.stringify(list);     
 
     }
-    else{
+    else{           //若不是最新日期的thisTimeArray为空则从列表中删除
         console.log("now i am saving not today's data");
         var list=JSON.parse(localStorage.dayData);
-        list[list.length-1+timeStep].record=thisTimeArray;
-       
+        if(thisTimeArray.length===0)
+        {
+            list.splice(list.length-1+timeStep,1);
+        }
+        else{
+            list[list.length-1+timeStep].record=thisTimeArray;
+        } 
         localStorage.dayData=JSON.stringify(list);     
     }
 }
     //刷新或关闭时保存数据
     window.onunload=function(){
        currentPageSave(); 
-       
+       if(timeStep===0)
+       {                            //如果最新日期的todo为0则关闭网页时从list中清除此项
+           if(thisTimeArray.length===0)
+           {
+            var list=JSON.parse(localStorage.dayData);
+            list.pop();
+            localStorage.dayData=JSON.stringify(list);  
+           }
+       }
     }
     </script>
 </body>
