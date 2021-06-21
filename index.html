@@ -1,132 +1,1349 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-  <title>TodoMvc</title>
-  <style>
-    .list-item {
-      position: relative;
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>Document</title>
+    <style>
+        a,input,button{outline: none; -webkit-tap-highlight-color: rgba(255, 255, 255, 0); -webkit-focus-ring-color: rgba(0, 0, 0, 0);}
+        input[type=checkbox] {
+            -webkit-appearance: none;
+            border: none;
+        }
+        #dataArea{
+            margin:1rem auto;
+            font-size: 1.5rem;
+            text-align: center;
+            color: #4d830a;
+        }
+        #preDate,#nextDate{
+            cursor: pointer;
+        }
+        #preDate:active,#nextDate:active{
+            color:#b4d889;
+        }
+        #date{
+            font-size: 1.2rem;
+            color:rgb(141, 126, 43);
+            font-family: Georgia, 'Times New Roman', Times, serif;
+        }
+        .date-arrow{
+            width: fit-content;
+            display: inline;
+        }
+        #logo{
+            margin:0 auto;
+            text-align: center;
+            color:rgb(165, 235, 151);
+        }
+        #inputArea{
+            margin: 1rem auto;
+            text-align: center;
+        }
+        #inputArea2{
+            margin: 1rem auto;
+            text-align: center;
+            margin-top: -0.5rem;
+        }
+        #inputTodo{
+            width:61%;
+            height: 2rem;
+            overflow: auto;
+            font-size: 0.9rem;
+            border-color: darkolivegreen;
+        }
+        #inputID,#inputED{
+            border-color: darkolivegreen;
+            width: fit-content;
+            box-sizing: border-box;
+            
+        }
+        #clickTodo{
+            box-sizing: border-box;
+            height: 61%;
+        }
+        .custom-btn {
+           
+            color: #fff;
+            border-radius: 5px;
+            padding: 10px 25px;
+            font-family: "Lato", sans-serif;
+            font-weight: 500;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            display: inline-block;
+            opacity: 70%;
+        }
+        .btn-13 {
+            background-color: #5ea386;
+            background-image: linear-gradient(315deg, #89d8ad 0%, #479275 74%);
+            border: none;
+            z-index: 1;
+        }
+        .btn-13:active {
+            top: 2px;
+        }
+       
+        #overview{
+            width:80%;
+           
+            margin: 0.5rem auto;
+            box-shadow: 10px 10px 5px #b3b2b2;
+        }
+        .item-box{
+           
+            max-height: 20rem;
+            overflow: auto;
+        }
+        .list-item{
+            width: 100%;
+            height: 3rem;
+           
+            border-color: grey;
+            border-top: 1px solid;
+           
+            background-color: rgb(239, 241, 204);
+            overflow-x:hidden;
+        }
+      /* .list-item:hover{
+            background-color: rgb(201, 200, 171);
+        } */
+        
+        .list-item-check{
+            float: left;
+           
+            width: 1.5rem;
+            margin-top: 0.8rem;
+            appearance: none;
+        }
+        .list-item-check::after{
+        content: url('images/checkbox0.png');
+        }
+
+        .list-item-check:checked::after{
+            content: url('images/checkbox.png');
+        }
+        .list-item-text{
+           box-sizing: border-box;
+             width: 86%;
+             max-height: 50%;
+             overflow-x:hidden;
+             overflow-y:auto;
+             line-height: 1.5rem;
+             cursor: pointer; 
+             margin-top: 0.8rem;    
+             transition: width 0.3s linear;     
+        }
+        .list-item.c .list-item-text{
+           
+          text-decoration: line-through;
+         color: grey;
+          
+       }
+       .list-item.swipeleft .list-item-text{
+           box-sizing: border-box;
+           width: 55%;
+       }
+       .list-item-delete,.list-item-important,.list-item-emergency,.list-item-emergency-e,.list-item-important-e{
+           float: right;
+           width: 0;
+           height: 100%;
+           cursor: pointer;
+           background-color: rgb(240, 168, 140);
+           margin-top: -2.3rem;
+           text-align: center;
+          line-height: 3rem;
+          transition: all 0.3s linear;
+          font-size: 0;
+       }
+       .list-item-important{
+           background-color: rgb(207, 154, 55);
+       }
+       .list-item-emergency{
+           background-color: rgb(95, 188, 216);
+       }
+    .list-item.swipeleft .list-item-delete,
+    .list-item.swipeleft .list-item-important,
+    .list-item.swipeleft .list-item-emergency{
+        box-sizing: border-box;
+        width: 10%;
+       font-size: 1rem;
+    }
+    .list-item.e.swipeleft .list-item-delete,
+    .list-item.e.swipeleft .list-item-important,
+    .list-item.e.swipeleft .list-item-emergency{
+        box-sizing: border-box;
+        width: 10%;
+       font-size: 1rem;
+       margin-top: 0;
+    }
+    .list-item.swipeleft.e .list-item-delete,
+    .list-item.swipeleft.e .list-item-important,
+    .list-item.swipeleft.e .list-item-emergency{
+        
+        width: 10%;
+       font-size: 1rem;
+       margin-top: 0;
     }
 
-    .list-item:hover {
-      background-color: #eee;
+    .table-filter{
+        margin: 0 auto;
+        text-align: center;
     }
-
-    .list-item-content {
-      height: 40px;
-      line-height: 40px;
-      padding-left: 10px;
+    .choose-tab{
+        font-size: 1rem;
+        color: lightgrey;
+        cursor: pointer;
     }
-
-    .list-item-content.c {
-      color: gray;
-      text-decoration: line-through;
+    .choose-tab.activate{
+        color: rgb(86, 116, 28);
+        border:1px solid #cee3e9;
+        background:#f1f7f9;
     }
-
-    .list-item-close,
-    .list-item-update {
-      display: none;
-      position: absolute;
-      top: 0;
-      right: 0;
-      height: 40px;
-      width: 40px;
-      line-height: 40px;
-      text-align: center;
-      border-width: 0;
-      cursor: pointer;
-      background-color: red;
-      color: white;
+    .filter-tab{
+        font-size: 0.8rem;
+        color: lightgrey;
+        cursor: pointer;
     }
-
-    .list-item-update {
-      right: 40px;
-      background-color: blue;
+    .filter-tab.activate{
+        color: rgb(86, 116, 28);
+        border-bottom: 1px solid black;
     }
-
-    .list-item:hover .list-item-close,
-    .list-item:hover .list-item-update {
-      display: block;
+    #itemTxt{
+        font-size:1rem;
+        color:black;
+        text-align: center;
+       margin-top: 0.1rem;
+       background-color: rgb(228, 253, 228);
     }
-  </style>
-  </script>
+    .bottom-bar{
+        font-size: 0.8rem;
+        color:lightgrey;
+        margin-top: 0.2rem;
+    }
+    .bottom-bar div{
+       
+        cursor: pointer;
+       width: fit-content;
+      
+    }
+    #au{
+        margin: 0 auto;
+        text-align: center;
+    }
+    #ad{
+        float: left;
+        margin-top: -1rem;
+    }
+    #cd{
+       float: right;
+       margin-top: -1rem;
+   }
+   .bottom-bar div:active{
+    background-color: rgb(229, 226, 226);
+   }
+   #undo{
+      
+       margin: 0 auto;
+       text-align: center;
+   }
+   #undoButton
+   {
+       margin: 0.5rem auto;
+       background:linear-gradient(to bottom, #f9faf7 5%, rgb(228, 253, 228) 100%);
+        background-color:rgb(228, 253, 228);
+        border-radius:6px;
+        border:1px solid #ccd9ce;
+        cursor:pointer;
+        color: rgb(128, 122, 122);
+        text-decoration:none;
+        margin-left: 0rem; 
+       
+   }
+   #undoButton:active {
+	position:relative;
+	top:1px;
+    background:linear-gradient(to bottom, #f9faf7 5%, #bef1d5 100%);
+   } 
+   #fourView
+   {
+    width:80%; 
+    margin: 0.5rem auto;
+    display: none;    
+   }
+   #q2,#q3{
+       box-sizing: border-box;
+       width: 50%;
+       height: 12rem;
+       border:1px solid #ffcc00;
+   }
+   #q3{
+       border:1px solid #ccf5d5;
+   }
+   #q1,#q4{
+       box-sizing: border-box;
+       width: 50%;
+       border:1px solid #e3e197;
+       height: 12rem;
+       float: right;
+       margin-top: -12rem;
+   }
+   #q4{
+    border:1px solid #adcd3c;
+   }
+   .quadrant-title{
+       font-size: 0.8rem;
+       margin: 0 auto;
+       text-align: center;
+       height: 1rem;
+   }
+   .quadrant-box{
+       height: 9.5rem;
+       overflow: auto;
+   }
+   #q2 .quadrant-item
+   {
+     border-top:1px solid #ffcc00;
+     background:#fffff7;
+   }
+   #q2 .quadrant-top
+   {
+     margin: 0 auto;
+     text-align: center;
+     border-bottom:1px solid #ffcc00;
+     background:rgb(251, 252, 229);
+   }
+   #q1 .quadrant-item
+   {
+     border-top:1px solid #e3e197;
+     background:rgb(244, 245, 222);
+   }
+   #q1 .quadrant-top
+   {
+     margin: 0 auto;
+     text-align: center;
+     border-bottom:1px solid #e3e197;
+     background:rgb(239, 241, 204);
+   }
+   #q4 .quadrant-item{
+     border-top:1px solid #adcd3c;
+     background:rgb(246, 255, 246);
+   }
+   #q4 .quadrant-top{
+     margin: 0 auto;
+     text-align: center;
+     border-bottom:1px solid #adcd3c;
+     background:rgb(228, 253, 228);
+   }
+   #q3 .quadrant-item{
+     border-top:1px solid #ccf5d5;
+     background:#ffffff;
+   }
+   #q3 .quadrant-top{
+     margin: 0 auto;
+     text-align: center;
+     border-bottom:1px solid #ccf5d5;
+     background:#fafdfb;
+   }
+   .quadrant-item{
+    font-size: 1rem;
+    height:1.5rem;
+   }
+   /* .quadrant-item div{
+       display: inline;
+   } */
+   .quadrant-item-text{
+       box-sizing: border-box;
+       max-width: 65%;
+       height: 1.5rem;
+       line-height: 1.5rem;
+       overflow:auto;
+   }
+   .quadrant-item-important,.quadrant-item-emergency{
+       float: right;
+       margin-top: -1.4rem;
+   }
+   .quadrant-item-important{
+       color:rgb(207, 154, 55); 
+   }
+   .quadrant-item-emergency{
+       color:rgb(95, 188, 216); 
+       margin-right: 1.5rem;
+   }
+   #footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    color:rgb(228, 227, 227);
+    font-family: Arial;
+    font-size: 0.5rem;
+    letter-spacing: 1px;
+    }
+    </style>
 </head>
+<body ontouchstart="">
+    <div id="dataArea">
+        <div id="preDate" class="date-arrow">
+            &lt
+        </div>
+        <div id="date" class="date-arrow">
+           2021-6-18
+        </div>
+        <div id="nextDate" class="date-arrow">
+            &gt
+        </div>
+    </div>
+    <h1 id="logo">todos</h1>
+    <div id="inputArea">
+        <input id="inputTodo" type="text" placeholder="What needs to be done today?" autofocus contenteditable="true">
+        <button class="custom-btn btn-13" id="clickTodo" type="button">Add Todo</button> 
+    </div>
+    <div id="inputArea2">
+         <input type="text" id="inputED" placeholder="Emergency Degree:1~10" oninput = "value=value.replace(/[^\d]/g,'')">
+         <input type="text" id="inputID" placeholder="Importance Degree:1~10" oninput = "value=value.replace(/[^\d]/g,'')">
+    </div>
+    <table class="table-filter">
+        <tr>
+        <td class="choose-tab activate">overview</td>
+        <td class="choose-tab">4-quadrant</td>
+        </tr>
+    </table>
+    <div id="overview" class="all-view">
+        <div id="item-box-overview" class="item-box">
+        </div>
+        <table class="table-filter">
+            <tr>
+            <td class="filter-tab activate">All</td>
+            <td class="filter-tab">Active</td>
+            <td class="filter-tab">Completed</td>
+            </tr>
+        </table>
+        <div id="itemTxt">
+            0 items left
+        </div>
+        <div class="bottom-bar">
+            <div id="au">All Undone</div>
+            <div id="ad">All Done</div>
+            <div id="cd">Clear Done</div>
+        </div>
+        <div id="undo"><button id="undoButton">undelete</button></div>
+    </div>
+    <div id="fourView" class="all-view">
+        <div class="quadrant" id="q2">
+            <div class="quadrant-title quadrant-top">E but not I</div>
+            <div class="quadrant-title" id="q2Txt">0 items</div>
+            <div class="quadrant-box" id="secondQuadrant"> 
+            </div> 
+        </div>
+        <div class="quadrant" id="q1">
+            <div class="quadrant-title quadrant-top">E&ampI</div>
+            <div class="quadrant-title" id="q1Txt">0 items</div>
+            <div class="quadrant-box" id="firstQuadrant"> 
+            </div> 
+        </div>
+        <div class="quadrant" id="q3">
+            <div class="quadrant-title quadrant-top">not I not E</div>
+            <div class="quadrant-title" id="q3Txt">0 items</div>
+            <div class="quadrant-box" id="thirdQuadrant"> 
+            </div> 
+        </div>
+        <div class="quadrant" id="q4">
+            <div class="quadrant-title quadrant-top">I but not E</div>
+            <div class="quadrant-title" id="q4Txt">0 items</div>
+            <div class="quadrant-box" id="fourthQuadrant"> 
+            </div> 
+        </div>
+    </div>
+    <div id="footer">CopyRight@caifangjunyan </div>
+    <script>
+        //数据初始化部分
+        var thisTimeArray; //总条目数组
 
-<body>
-  <h1>TodoMvc</h1>
-  <input id="todoInput" type="text" placeholder="to do something" autofocus>
-  <button id="addButton" type="button">Add Todo Item</button>
-  <div id="listDiv"></div>
-  <div id="activeDiv"></div>
 
-  <script>
-    function $(id) {
-      return document.getElementById(id);
-    }
+        var thisTimeNum=0;   //总条目数
+        var thisTimeActive=0;  //未完成条目数
 
-    var activeAmount = 0;
+        var date=new Date();  //最新日期
+        var year=date.getFullYear();
+        var month=date.getMonth()+1;
+        var day=date.getDate();
 
-    function updateActive(offset) {
-      activeAmount += offset;
-      var activeDiv = $('activeDiv');
-      activeDiv.innerHTML = activeAmount + ' items left';
-    }
+        var timeStep=0; //时间线的变动步数
 
-    function addTodo() {
-      var todoInput = $('todoInput');
-      var message = todoInput.value;
-      var listDiv = $('listDiv');
-      if (message == '') {
-        console.warn('message is empty');
-        return;
-      }
+        var nowFilter=0;  //当前filter选择
+        var nowView=0;  //当前视图选择
+        var latestTxt=""; //最近一次删除元素的txt
+        var latestE=0;
+        var latestI=0;
+        var latestYear;
+        var latestMonth;
+        var latestDay;
+        var latestState;
+        var latestTimeStep;
 
-      var itemDiv = document.createElement('div');
-      itemDiv.className = 'list-item';
-      listDiv.insertBefore(itemDiv, listDiv.firstChild);
-
-      var itemContentDiv = document.createElement('div');
-      itemContentDiv.className = 'list-item-content';
-      itemContentDiv.innerHTML = message;
-      itemDiv.appendChild(itemContentDiv);
-
-      var itemCloseButton = document.createElement('button');
-      itemCloseButton.className = 'list-item-close';
-      itemCloseButton.innerHTML = 'X';
-      itemDiv.appendChild(itemCloseButton);
-      itemCloseButton.addEventListener('click', function () {
-        listDiv.removeChild(itemDiv);
-        updateActive(-1);
-      });
-
-      var itemUpdateButton = document.createElement('button');
-      itemUpdateButton.className = 'list-item-update';
-      itemUpdateButton.innerHTML = 'U';
-      itemDiv.appendChild(itemUpdateButton);
-      itemUpdateButton.addEventListener('click', function () {
-        if (itemContentDiv.classList.contains('c')) {
-          itemContentDiv.classList.remove('c');
-          updateActive(+1);
+        //加载持久化数据 
+        if(typeof(Storage) !== "undefined") {
+        if (localStorage.dayData) {
+            var list=JSON.parse(localStorage.dayData);
+            if(list.length!=0)
+            {
+                //若为同一天则看是否有数据
+                if(list[list.length-1].day===day&&list[list.length-1].month===month&&list[list.length-1].year===year)
+                {
+                    thisTimeArray=list[list.length-1].record;
+                    initialWithRecord();
+                }
+                else
+                {
+                    thisTimeArray=new Array();
+                    //现在就放进去
+                    var saveDate={
+                        year:year,
+                        month:month,
+                        day:day,
+                        record:thisTimeArray
+                    };
+                    list.push(saveDate);
+                    localStorage.dayData=JSON.stringify(list); 
+                }
+            }
+        } else {
+            console.log("i am here");
+           var dailyRecord=new Array();
+           thisTimeArray=new Array();
+           localStorage.setItem("dayData",JSON.stringify(dailyRecord));
         }
-        else {
-          itemContentDiv.classList.add('c');
-          updateActive(-1);
-        }
-        console.log('update');
-        // updateActive(-1);
-      });
-
-      todoInput.value = '';
-      updateActive(+1); // +1 === 1
+    } 
+    else {
+        document.getElementById("logo").innerHTML = "Web Storage Failed";
     }
 
-    $('addButton').addEventListener('click', addTodo);
-    $('todoInput').addEventListener('keyup', function (event) {
-      if (event.keyCode != 0xd) return;
-      addTodo();
+
+        //判断是否为移动设备（有些内容的显示需要分别设置）
+        function isMobile(){
+            if( navigator.userAgent.match(/Android/i)
+                || navigator.userAgent.match(/webOS/i)
+                || navigator.userAgent.match(/iPhone/i)
+                || navigator.userAgent.match(/iPad/i)
+                || navigator.userAgent.match(/iPod/i)
+                || navigator.userAgent.match(/BlackBerry/i)
+                || navigator.userAgent.match(/Windows Phone/i)
+            )return true;
+            return false;
+        }
+        if(isMobile())
+        {
+            document.getElementById("undoButton").style.marginLeft="0rem";
+        }
+        else
+        {
+            document.getElementById("undoButton").style.marginLeft="1rem";
+        }
+        //读取最新日期显示日期 
+        document.getElementById("date").innerHTML=year+"-"+month+"-"+day;
+        //初始化总未完成条数显示
+        document.getElementById("itemTxt").innerHTML=thisTimeActive+" items"+" left";
+
+        //由给定ARRAY生成元素
+        function initialWithRecord()
+        {
+            //数据重置
+            thisTimeNum=0;
+            thisTimeActive=0;
+            updateItemTxt(0);
+            //清空现有元素
+            var tq=document.getElementById("item-box-overview");
+            while(tq.hasChildNodes()) 
+          {
+            tq.removeChild(tq.firstChild);
+          }
+          
+            for(var p of thisTimeArray)
+            {
+                //闭包保护，否则循环只能取到最后值
+                (function(){
+                    thisTimeNum++;
+                var itemID=thisTimeNum-1;
+            var listItem=document.createElement("div");
+            listItem.setAttribute("class","list-item");
+            if(p.state==="complete")
+            {
+                listItem.classList.add("c");
+            }
+            else
+            {
+                updateItemTxt(1);
+            }
+            listItem.setAttribute("id","t-"+itemID);
+             //左右滑动动画监听
+        var x, y, X, Y, swipeX, swipeY;
+    listItem.addEventListener('touchstart', function(event) {
+        x = event.changedTouches[0].pageX;
+        y = event.changedTouches[0].pageY;
+        swipeX = true;
+        swipeY = true ;      
+    });
+    listItem.addEventListener('touchmove', function(event){    	
+        X = event.changedTouches[0].pageX;
+        Y = event.changedTouches[0].pageY;        
+        // 左右滑动
+        if(swipeX && Math.abs(X - x) - Math.abs(Y - y) > 0){
+            // 阻止事件冒泡
+            event.stopPropagation();
+ 
+            if(X - x > 10){   //右滑
+                event.preventDefault();
+                this.classList.remove("swipeleft");    //右滑收起
+            }
+            if(x - X > 10){   //左滑
+                event.preventDefault();                
+                var swipeLeft = document.getElementsByClassName("swipeleft");
+                for(var j = 0; j < swipeLeft.length; j++){
+                	swipeLeft[j].classList.remove("swipeleft");
+                }
+                this.classList.add("swipeleft");   //左滑展开
+            }
+            swipeY = false;
+        }
+        // 上下滑动
+        if(swipeY && Math.abs(X - x) - Math.abs(Y - y) < 0) {
+            swipeX = false;
+        }        
     });
 
-  </script>
-</body>
+            var listItemCheck=document.createElement("input");
+            listItemCheck.setAttribute("type","checkbox");
+            listItemCheck.setAttribute("class","list-item-check");
+            if(p.state==="complete")
+            {
+                listItemCheck.checked=true;
+            }
+            //check监听事件
+            listItemCheck.addEventListener("click",function(){
+                var idss=listItem.getAttribute("id");
+                idss=idss.split("-");
+                console.log("checked "+idss);
+                if(listItem.classList.contains("c"))
+                {
+                    //数据部分
+                    thisTimeArray[parseInt(idss[1])].state="active";
+                    //html部分
+                    listItem.classList.remove("c");
+                    updateItemTxt(1);
+                    if(nowFilter==2)  //complete下不显示
+                    {
+                        listItem.style.display="none";
+                    }
+                }
+                else{
+                    //数据部分
+                    thisTimeArray[parseInt(idss[1])].state="complete";
+                    //html部分
+                    listItem.classList.add("c");
+                    updateItemTxt(-1);
+                    if(nowFilter==1) //active下不显示
+                    {
+                        listItem.style.display="none";
+                    }
+                }
+            });
+            listItem.appendChild(listItemCheck);
 
+            var listItemText=document.createElement("div");
+            listItemText.setAttribute("class","list-item-text");
+            listItemText.innerHTML=p.text;
+            //点击编辑文本事件
+            listItemText.addEventListener("click",function(){
+                var oldValue=this.innerHTML;
+                var oldObject=this;
+                var newInput=document.createElement("input");
+                newInput.setAttribute("class","list-item-text");
+                newInput.setAttribute("type","text");
+                newInput.setAttribute("value",oldValue);
+                newInput.addEventListener("click",function(){
+                    return false;
+                });
+               newInput.select();
+                newInput.addEventListener("blur",function(){
+                    var changeTxt=newInput.value;
+                    if(changeTxt=="")
+                    {
+                        alert("Please do ont enter empty todo!");
+                    }
+                    else{
+                        oldObject.innerHTML=changeTxt;
+                        //数据部分
+                        var idss=listItem.getAttribute("id");
+                        idss=idss.split("-");
+                        thisTimeArray[parseInt(idss[1])].text=changeTxt;
+                    }
+                    this.parentNode.replaceChild(oldObject,this);
+                    listItem.classList.remove("e");
+                });
+                listItem.classList.add("e");
+                this.parentNode.replaceChild(newInput,this);
+            });
+            listItem.appendChild(listItemText);
+
+            var listItemDelete=document.createElement("div");
+            listItemDelete.setAttribute("class","list-item-delete");
+            listItemDelete.innerHTML="X";
+            //删除监听事件
+            listItemDelete.addEventListener("click",function(){
+                //数据部分
+                if(!listItem.classList.contains("c"))
+                {
+                    updateItemTxt(-1);
+                }
+                thisTimeNum--;
+                var idss=listItem.getAttribute("id");
+                idss=idss.split("-");
+                //记录最后一次单独删除的元素
+                latestTxt=thisTimeArray[parseInt(idss[1])].text;
+                latestE=thisTimeArray[parseInt(idss[1])].emdegree;
+                latestI=thisTimeArray[parseInt(idss[1])].imdegree;
+                latestState=thisTimeArray[parseInt(idss[1])].state;
+                latestYear=thisTimeArray[parseInt(idss[1])].year;
+                latestMonth=thisTimeArray[parseInt(idss[1])].month;
+                latestDay=thisTimeArray[parseInt(idss[1])].day;
+                latestTimeStep=timeStep;
+
+                thisTimeArray.splice(parseInt(idss[1]),1);
+               
+
+                //html部分
+                //listItem.parentNode.removeChild(listItem);
+                initialWithRecord();
+                updateFilter();
+            });
+            listItem.appendChild(listItemDelete);
+
+            var listItemImportant=document.createElement("div");
+            listItemImportant.setAttribute("class","list-item-important");
+            listItemImportant.innerHTML="I"+p.imdegree;
+            listItem.appendChild(listItemImportant);
+
+            var listItemEmergency=document.createElement("div");
+            listItemEmergency.setAttribute("class","list-item-emergency");
+            listItemEmergency.innerHTML="E"+p.emdegree;
+            listItem.appendChild(listItemEmergency);
+
+            var itemBox=document.getElementById("item-box-overview");
+            itemBox.insertBefore(listItem,itemBox.firstChild);
+                    
+                })();
+               
+            }
+        }
+
+        //给ADD TODO按钮增加监听事件
+        const todo=function clicktodo(event){
+            if(event==="undelete")
+            {
+                 //由最后一次删除信息创建TODO
+
+                 var newItem={   //数据部分
+                        year:latestYear,
+                        month:latestMonth,
+                        day:latestDay,
+                        text:latestTxt,
+                        emdegree:latestE,
+                        imdegree:latestI,
+                        state:latestState
+                    };
+                if(latestDay!=day||latestMonth!=month||latestYear!=year)  //在其他时间线上删除的todo另外恢复
+                {
+                    console.log("i am data deleted in other time");
+                    var list=JSON.parse(localStorage.dayData);
+                    list[list.length-1+latestTimeStep].record.push(newItem);
+                    localStorage.dayData=JSON.stringify(list); 
+                    return;
+                }
+                else
+                {
+                   
+                    thisTimeNum++;
+                    var itemID=thisTimeNum-1;
+                    thisTimeArray.push(newItem);
+                }
+            }
+            else{
+                var valid=true;
+                //判断当前日期是否为最新日期，若不是则禁止输入
+                var ndate=document.getElementById("date").innerHTML;
+                var ndates=ndate.split("-");
+                if(parseInt(ndates[0])!=year||parseInt(ndates[1])!=month||parseInt(ndates[2])!=day)
+                {
+                    alert("Please go back to the newest date to add todo!");
+                    return;
+                }
+                //判断输入是否合法
+                var newtxt=document.getElementById("inputTodo").value; 
+                if(newtxt=="")
+                {
+                    alert("Please do ont enter empty todo!");
+                    valid=false;
+                }
+                var emdegree=document.getElementById("inputED").value;
+                if(emdegree=="")
+                {
+                    alert("Please give todo an emergency degree!");
+                    valid=false;
+                }
+                var imdegree=document.getElementById("inputID").value;
+                if(imdegree=="")
+                {
+                    alert("Please give todo an importance degree!");
+                    valid=false;
+                }
+                if(!valid) return;
+                emdegree=parseInt(emdegree);
+                if(emdegree<1||emdegree>10)
+                {
+                    alert("The emergency degree must be in 1~10!");
+                    valid=false;
+                }
+                imdegree=parseInt(imdegree);
+                if(imdegree<1||imdegree>10)
+                {
+                    alert("The importance degree must be in 1~10!");
+                    valid=false;
+                }
+                if(!valid) return;
+
+                //输入合法，创建TODO
+
+                var newItem={   //数据部分
+                    year:year,
+                    month:month,
+                    day:day,
+                    text:newtxt,
+                    emdegree:emdegree,
+                    imdegree:imdegree,
+                    state:"active"
+                };
+                thisTimeNum++;
+                var itemID=thisTimeNum-1;
+                thisTimeArray.push(newItem);
+            }
+            updateItemTxt(1);   //html元素部分
+            var listItem=document.createElement("div");
+            listItem.setAttribute("class","list-item");
+            if(newItem.state==="complete")
+            {
+                listItem.classList.add("c");
+            }
+            listItem.setAttribute("id","t-"+itemID);
+             //左右滑动动画监听
+        var x, y, X, Y, swipeX, swipeY;
+    listItem.addEventListener('touchstart', function(event) {
+        x = event.changedTouches[0].pageX;
+        y = event.changedTouches[0].pageY;
+        swipeX = true;
+        swipeY = true ;      
+    });
+    listItem.addEventListener('touchmove', function(event){    	
+        X = event.changedTouches[0].pageX;
+        Y = event.changedTouches[0].pageY;        
+        // 左右滑动
+        if(swipeX && Math.abs(X - x) - Math.abs(Y - y) > 0){
+            // 阻止事件冒泡
+            event.stopPropagation();
+ 
+            if(X - x > 10){   //右滑
+                event.preventDefault();
+                this.classList.remove("swipeleft");    //右滑收起
+            }
+            if(x - X > 10){   //左滑
+                event.preventDefault();                
+                var swipeLeft = document.getElementsByClassName("swipeleft");
+                for(var j = 0; j < swipeLeft.length; j++){
+                	swipeLeft[j].classList.remove("swipeleft");
+                }
+                this.classList.add("swipeleft");   //左滑展开
+            }
+            swipeY = false;
+        }
+        // 上下滑动
+        if(swipeY && Math.abs(X - x) - Math.abs(Y - y) < 0) {
+            swipeX = false;
+        }        
+    });
+
+            var listItemCheck=document.createElement("input");
+            listItemCheck.setAttribute("type","checkbox");
+            listItemCheck.setAttribute("class","list-item-check");
+            //check监听事件
+            listItemCheck.addEventListener("click",function(){
+                var idss=listItem.getAttribute("id");
+                idss=idss.split("-");
+                if(listItem.classList.contains("c"))
+                {
+                    //数据部分
+                    thisTimeArray[parseInt(idss[1])].state="active";
+                    //html部分
+                    listItem.classList.remove("c");
+                    updateItemTxt(1);
+                    if(nowFilter==2)  //complete下不显示
+                    {
+                        listItem.style.display="none";
+                    }
+                }
+                else{
+                    //数据部分
+                    thisTimeArray[parseInt(idss[1])].state="complete";
+                    //html部分
+                    listItem.classList.add("c");
+                    updateItemTxt(-1);
+                    if(nowFilter==1) //active下不显示
+                    {
+                        listItem.style.display="none";
+                    }
+                }
+            });
+            listItem.appendChild(listItemCheck);
+
+            var listItemText=document.createElement("div");
+            listItemText.setAttribute("class","list-item-text");
+            listItemText.innerHTML=newItem.text;
+            //点击编辑文本事件
+            listItemText.addEventListener("click",function(){
+                var oldValue=this.innerHTML;
+                var oldObject=this;
+                var newInput=document.createElement("input");
+                newInput.setAttribute("class","list-item-text");
+                newInput.setAttribute("type","text");
+                newInput.setAttribute("value",oldValue);
+                newInput.addEventListener("click",function(){
+                    return false;
+                });
+               newInput.select();
+                newInput.addEventListener("blur",function(){
+                    var changeTxt=newInput.value;
+                    if(changeTxt=="")
+                    {
+                        alert("Please do ont enter empty todo!");
+                    }
+                    else{
+                        oldObject.innerHTML=changeTxt;
+                        //数据部分
+                        var idss=listItem.getAttribute("id");
+                        idss=idss.split("-");
+                        thisTimeArray[parseInt(idss[1])].text=changeTxt;
+                    }
+                    this.parentNode.replaceChild(oldObject,this);
+                    listItem.classList.remove("e");
+                });
+                listItem.classList.add("e");
+                this.parentNode.replaceChild(newInput,this);
+            });
+            listItem.appendChild(listItemText);
+
+            var listItemDelete=document.createElement("div");
+            listItemDelete.setAttribute("class","list-item-delete");
+            listItemDelete.innerHTML="X";
+            //删除监听事件
+            listItemDelete.addEventListener("click",function(){
+                //数据部分
+                if(!listItem.classList.contains("c"))
+                {
+                    updateItemTxt(-1);
+                }
+                thisTimeNum--;
+                var idss=listItem.getAttribute("id");
+                idss=idss.split("-");
+                //记录最后一次单独删除的元素
+                latestTxt=thisTimeArray[parseInt(idss[1])].text;
+                latestE=thisTimeArray[parseInt(idss[1])].emdegree;
+                latestI=thisTimeArray[parseInt(idss[1])].imdegree;
+                latestState=thisTimeArray[parseInt(idss[1])].state;
+                latestYear=thisTimeArray[parseInt(idss[1])].year;
+                latestMonth=thisTimeArray[parseInt(idss[1])].month;
+                latestDay=thisTimeArray[parseInt(idss[1])].day;
+                latestTimeStep=timeStep;
+
+                thisTimeArray.splice(parseInt(idss[1]),1);
+                initialWithRecord();
+                updateFilter();
+
+                //html部分
+               // listItem.parentNode.removeChild(listItem);
+            });
+            listItem.appendChild(listItemDelete);
+
+            var listItemImportant=document.createElement("div");
+            listItemImportant.setAttribute("class","list-item-important");
+            listItemImportant.innerHTML="I"+newItem.imdegree;
+            listItem.appendChild(listItemImportant);
+
+            var listItemEmergency=document.createElement("div");
+            listItemEmergency.setAttribute("class","list-item-emergency");
+            listItemEmergency.innerHTML="E"+newItem.emdegree;
+            listItem.appendChild(listItemEmergency);
+
+            //跳回到主页面
+            if(nowView==1)
+            {
+                choices[0].onclick();
+            }
+            if(nowFilter==2)//complete里不展示
+            {
+                listItem.style.display="none";
+            }
+
+            var itemBox=document.getElementById("item-box-overview");
+            itemBox.insertBefore(listItem,itemBox.firstChild);
+
+            //清空输入框
+            document.getElementById("inputTodo").value="";
+            document.getElementById("inputED").value="";
+            document.getElementById("inputID").value="";
+           
+        }
+        document.getElementById("clickTodo").addEventListener("click",todo);
+        //选择视图切换：overview 4-quadrant-view
+        var choices=document.getElementsByClassName("choose-tab");
+        var views=document.getElementsByClassName("all-view");
+        for(var i = 0; i < choices.length; i++) {
+			choices[i].index = i;
+			choices[i].onclick = function() {
+				for(var j = 0; j < choices.length; j++) {
+					choices[j].classList.remove("activate");
+				}
+				this.classList.add("activate");
+				for(var k = 0; k < views.length; k++) {
+					views[k].style.display = "none";
+				}
+                nowView=this.index;
+				views[this.index].style.display = "block";
+                updateView();
+			}
+		}
+        //选择查看切换：all active completed
+        var lis = document.getElementsByClassName("filter-tab");
+        for(var i = 0; i < lis.length; i++) {
+			lis[i].index = i;
+			lis[i].onclick = function() {
+				for(var j = 0; j < lis.length; j++) {
+					lis[j].classList.remove("activate");
+				}
+				this.classList.add("activate");
+                nowFilter=this.index;
+				updateFilter();
+			}
+		}
+        
+    //update 未完成条目数显示
+    function updateItemTxt(i)
+    {
+        thisTimeActive+=i;
+        document.getElementById("itemTxt").innerHTML=thisTimeActive+" items"+" left";
+    }
+
+    //update 切换filter显示
+    function updateFilter()
+    {
+        var allItem=document.querySelectorAll(".list-item");
+        if(nowFilter==0)
+        {
+            for(var p of allItem)
+            {
+                p.style.display="block";
+            }
+        }
+        else if(nowFilter==1)
+        {
+            for(var p of allItem)
+            {
+                if(p.classList.contains("c"))
+                {
+                    p.style.display="none";
+                }
+                else{
+                    p.style.display="block";
+                }
+            }
+        }
+        else if(nowFilter==2)
+        {
+            for(var p of allItem)
+            {
+                if(p.classList.contains("c"))
+                {
+                    p.style.display="block";
+                }
+                else{
+                    p.style.display="none";
+                }
+            }
+        }
+    }
+
+    //all done按钮添加监听
+    document.getElementById("ad").addEventListener("click",function(){
+        //数据部分
+        for(var p of thisTimeArray)
+        {
+            p.state="complete";
+        }
+        thisTimeActive=0;
+        updateItemTxt(0);
+
+        //页面部分
+        var allItem=document.querySelectorAll(".list-item");
+        for(var p of allItem)
+        {
+            if(!p.classList.contains("c"))
+            p.classList.add("c");
+        }
+        updateFilter();
+    });
+
+    //all undone按钮添加监听
+    document.getElementById("au").addEventListener("click",function(){
+        //数据部分
+        for(var p of thisTimeArray)
+        {
+            p.state="active";
+        }
+        thisTimeActive=thisTimeNum;
+        updateItemTxt(0);
+
+        //页面部分
+        var allItem=document.querySelectorAll(".list-item");
+        for(var p of allItem)
+        {
+            if(p.classList.contains("c"))
+            p.classList.remove("c");
+        }
+        updateFilter();
+    });
+    
+    //clear done按钮添加监听
+    document.getElementById("cd").addEventListener("click",function(){
+        //数据部分
+        for(var i=thisTimeArray.length-1;i>=0;i--){
+            if(thisTimeArray[i].state=="complete")
+            {
+                thisTimeArray.splice(i,1);
+                thisTimeNum--;
+            }
+        }
+
+        //页面部分
+        var allItem=document.querySelectorAll(".list-item");
+        for(var p of allItem)
+        {
+            if(p.classList.contains("c"))
+            p.parentNode.removeChild(p);
+        }
+        initialWithRecord();
+        updateFilter();
+    });
+
+    //恢复最后一次单独删除的元素
+    document.getElementById("undoButton").addEventListener("click",function(){
+        if(latestTxt=="")
+        {
+            alert("You haven't deleted a single todo!");
+        }
+        else{
+            todo("undelete");
+        }
+
+    });
+
+    //update 切换到4-quadrant view
+    function updateView()
+    {
+        var firstq=document.getElementById("firstQuadrant");
+            var secondq=document.getElementById("secondQuadrant");
+            var thirdq=document.getElementById("thirdQuadrant");
+            var fourthq=document.getElementById("fourthQuadrant");
+
+        while(firstq.hasChildNodes()) 
+          {
+            firstq.removeChild(firstq.firstChild);
+          }
+          while(secondq.hasChildNodes()) 
+          {
+            secondq.removeChild(secondq.firstChild);
+          }
+          while(thirdq.hasChildNodes()) 
+          {
+            thirdq.removeChild(thirdq.firstChild);
+          }
+          while(fourthq.hasChildNodes()) 
+          {
+            fourthq.removeChild(fourthq.firstChild);
+          }
+         
+
+        for(var p of thisTimeArray)
+        {
+            //循环保护
+            (function(){
+             if(p.state==="active")
+            {
+              
+
+            var newElement=document.createElement("div");
+            newElement.setAttribute("class","quadrant-item");
+
+            var qtext=document.createElement("div");
+            qtext.setAttribute("class","quadrant-item-text");
+            qtext.innerHTML=p.text;
+            newElement.appendChild(qtext);
+
+            var qi=document.createElement("div");
+            qi.setAttribute("class","quadrant-item-important");
+            qi.innerHTML="I"+p.imdegree;
+            newElement.appendChild(qi);
+
+            var qe=document.createElement("div");
+            qe.setAttribute("class","quadrant-item-emergency");
+            qe.innerHTML="E"+p.emdegree;
+            newElement.appendChild(qe);
+
+            if(p.emdegree>5&&p.imdegree>5)
+            {
+                firstq.appendChild(newElement);
+                return;
+            }
+            if(p.emdegree>5&&p.imdegree<=5)
+            {
+                secondq.appendChild(newElement);
+                return;
+            }
+            if(p.imdegree>5&&p.emdegree<=5)
+            {
+                fourthq.appendChild(newElement);
+                return;
+            }
+            thirdq.appendChild(newElement);
+            }
+            })();
+           
+           
+        }
+    }
+
+    //时间线变动：前一天
+    document.getElementById("preDate").addEventListener("click",function(){
+        var list=JSON.parse(localStorage.dayData);
+        var move=timeStep-1;
+        if(list.length-1+move<0)
+        {
+            alert("No more records before!");
+            return;
+        }
+        else{
+            //重要：每次切换时间都保存当前时间下的数据
+            currentPageSave();
+            //数据部分
+            timeStep=move;
+            var nowtimeindex=list.length-1+timeStep;
+           
+            thisTimeArray=list[nowtimeindex].record;
+            
+            //更改现在时间
+            document.getElementById("date").innerHTML=list[nowtimeindex].year+"-"+list[nowtimeindex].month+"-"+list[nowtimeindex].day;
+            
+            initialWithRecord();
+            updateFilter();
+
+        }
+
+    });
+
+     //时间线变动：后一天
+     document.getElementById("nextDate").addEventListener("click",function(){
+        var list=JSON.parse(localStorage.dayData);
+        var move=timeStep+1;
+        if(list.length-1+move>=list.length)
+        {
+            alert("No more records after!");
+            return;
+        }
+        else{
+            //重要：每次切换时间都保存当前时间下的数据
+            currentPageSave();
+            //数据部分
+            timeStep=move;
+            var nowtimeindex=list.length-1+timeStep;
+            thisTimeArray=list[nowtimeindex].record;
+            
+            //更改现在时间
+            document.getElementById("date").innerHTML=list[nowtimeindex].year+"-"+list[nowtimeindex].month+"-"+list[nowtimeindex].day;
+            initialWithRecord();
+            updateFilter();
+
+        }
+
+});
+
+//保存某时间下数据
+function currentPageSave()   
+{
+    if(timeStep==0)
+    {
+        console.log("now i am saving");
+        var saveDate={
+            year:year,
+            month:month,
+            day:day,
+            record:thisTimeArray
+        };
+        var list=JSON.parse(localStorage.dayData);
+        if(list.length!=0)
+        {
+            if(list[list.length-1].day===day&&list[list.length-1].month===month&&list[list.length-1].year===year)
+                {
+                   list.pop();
+                   list.push(saveDate);  //更新同一天数据
+                }
+                else
+                {
+                    list.push(saveDate);
+                }
+        }
+        else{
+            list.push(saveDate);
+        }
+       
+        localStorage.dayData=JSON.stringify(list);     
+
+    }
+    else{           //若不是最新日期的thisTimeArray为空则从列表中删除
+        console.log("now i am saving not today's data");
+        var list=JSON.parse(localStorage.dayData);
+        if(thisTimeArray.length===0)
+        {
+            list.splice(list.length-1+timeStep,1);
+        }
+        else{
+            list[list.length-1+timeStep].record=thisTimeArray;
+        } 
+        localStorage.dayData=JSON.stringify(list);     
+    }
+}
+    //刷新或关闭时保存数据
+    window.onunload=function(){
+       currentPageSave(); 
+       if(timeStep===0)
+       {                            //如果最新日期的todo为0则关闭网页时从list中清除此项
+           if(thisTimeArray.length===0)
+           {
+            var list=JSON.parse(localStorage.dayData);
+            list.pop();
+            localStorage.dayData=JSON.stringify(list);  
+           }
+       }
+    }
+    </script>
+</body>
 </html>
