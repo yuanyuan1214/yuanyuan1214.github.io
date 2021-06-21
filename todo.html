@@ -127,8 +127,8 @@
             content: url('images/checkbox.png');
         }
         .list-item-text{
-           
-             width: 88%;
+           box-sizing: border-box;
+             width: 86%;
              max-height: 50%;
              overflow-x:hidden;
              overflow-y:auto;
@@ -144,9 +144,10 @@
           
        }
        .list-item.swipeleft .list-item-text{
-           width: 60%;
+           box-sizing: border-box;
+           width: 55%;
        }
-       .list-item-delete,.list-item-important,.list-item-emergency{
+       .list-item-delete,.list-item-important,.list-item-emergency,.list-item-emergency-e,.list-item-important-e{
            float: right;
            width: 0;
            height: 100%;
@@ -167,10 +168,27 @@
     .list-item.swipeleft .list-item-delete,
     .list-item.swipeleft .list-item-important,
     .list-item.swipeleft .list-item-emergency{
-        
+        box-sizing: border-box;
         width: 10%;
        font-size: 1rem;
     }
+    .list-item.e.swipeleft .list-item-delete,
+    .list-item.e.swipeleft .list-item-important,
+    .list-item.e.swipeleft .list-item-emergency{
+        box-sizing: border-box;
+        width: 10%;
+       font-size: 1rem;
+       margin-top: 0;
+    }
+    .list-item.swipeleft.e .list-item-delete,
+    .list-item.swipeleft.e .list-item-important,
+    .list-item.swipeleft.e .list-item-emergency{
+        
+        width: 10%;
+       font-size: 1rem;
+       margin-top: 0;
+    }
+
     .table-filter{
         margin: 0 auto;
         text-align: center;
@@ -396,21 +414,6 @@
     </table>
     <div id="overview" class="all-view">
         <div id="item-box-overview" class="item-box">
-            <div class="list-item" id="t1">
-               <input type="checkbox" class="list-item-check">
-               <div class="list-item-text">
-                   这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容
-               </div>
-               <div class="list-item-delete">
-                   X
-               </div>
-               <div class="list-item-important">
-                  I0
-               </div>
-               <div class="list-item-emergency">
-                  E0
-               </div>
-            </div>
         </div>
         <table class="table-filter">
             <tr>
@@ -434,73 +437,84 @@
             <div class="quadrant-title quadrant-top">E but not I</div>
             <div class="quadrant-title" id="q2Txt">0 items</div>
             <div class="quadrant-box" id="secondQuadrant"> 
-                <div class="quadrant-item">
-                    <div class="quadrant-item-text">
-                        这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容
-                    </div>
-                    <div class="quadrant-item-important">
-                        I0
-                    </div>
-                    <div class="quadrant-item-emergency">
-                        E0
-                    </div>
-                </div>
             </div> 
         </div>
         <div class="quadrant" id="q1">
             <div class="quadrant-title quadrant-top">E&ampI</div>
             <div class="quadrant-title" id="q1Txt">0 items</div>
             <div class="quadrant-box" id="firstQuadrant"> 
-                <div class="quadrant-item">
-                    <div class="quadrant-item-text">
-                        这是内容
-                    </div>
-                    <div class="quadrant-item-important">
-                        I0
-                    </div>
-                    <div class="quadrant-item-emergency">
-                        E0
-                    </div>
-                </div>
             </div> 
         </div>
         <div class="quadrant" id="q3">
             <div class="quadrant-title quadrant-top">not I not E</div>
             <div class="quadrant-title" id="q3Txt">0 items</div>
             <div class="quadrant-box" id="thirdQuadrant"> 
-                <div class="quadrant-item">
-                    <div class="quadrant-item-text">
-                        这是内容
-                    </div>
-                    <div class="quadrant-item-important">
-                        I0
-                    </div>
-                    <div class="quadrant-item-emergency">
-                        E0
-                    </div>
-                </div>
             </div> 
         </div>
         <div class="quadrant" id="q4">
             <div class="quadrant-title quadrant-top">I but not E</div>
             <div class="quadrant-title" id="q4Txt">0 items</div>
             <div class="quadrant-box" id="fourthQuadrant"> 
-                <div class="quadrant-item">
-                    <div class="quadrant-item-text">
-                        这是内容
-                    </div>
-                    <div class="quadrant-item-important">
-                        I0
-                    </div>
-                    <div class="quadrant-item-emergency">
-                        E0
-                    </div>
-                </div>
             </div> 
         </div>
     </div>
     <div id="footer">CopyRight@caifangjunyan </div>
     <script>
+        //数据初始化部分
+        var thisTimeArray; //总条目数组
+
+
+        var thisTimeNum=0;   //总条目数
+        var thisTimeActive=0;  //未完成条目数
+
+        var date=new Date();  //最新日期
+        var year=date.getFullYear();
+        var month=date.getMonth()+1;
+        var day=date.getDate();
+
+        var timeStep=0; //时间线的变动步数
+
+        var nowFilter=0;  //当前filter选择
+        var nowView=0;  //当前视图选择
+        var latestTxt=""; //最近一次删除元素的txt
+        var latestE=0;
+        var latestI=0;
+        var latestYear;
+        var latestMonth;
+        var latestDay;
+        var latestState;
+        var latestTimeStep;
+
+        //加载持久化数据 
+        if(typeof(Storage) !== "undefined") {
+        if (localStorage.dayData) {
+            var list=JSON.parse(localStorage.dayData);
+            if(list.length!=0)
+            {
+                //若为同一天则看是否有数据
+                if(list[list.length-1].day===day&&list[list.length-1].month===month&&list[list.length-1].year===year)
+                {
+                    thisTimeArray=list[list.length-1].record;
+                    initialWithRecord();
+                }
+                else
+                {
+                    thisTimeArray=new Array();
+                }
+            }
+        } else {
+            console.log("i am here");
+           var dailyRecord=new Array();
+           thisTimeArray=new Array();
+           localStorage.setItem("dayData",JSON.stringify(dailyRecord));
+        }
+    } 
+    else {
+        document.getElementById("logo").innerHTML = "Web Storage Failed";
+    }
+
+
+        //判断是否为移动设备（有些内容的显示需要分别设置）
         function isMobile(){
             if( navigator.userAgent.match(/Android/i)
                 || navigator.userAgent.match(/webOS/i)
@@ -520,81 +534,50 @@
         {
             document.getElementById("undoButton").style.marginLeft="1rem";
         }
-        const todo=function clicktodo(){
-            var valid=true;
-            var newtxt=document.getElementById("inputTodo").value;
-            if(newtxt=="")
-            {
-                alert("Please do ont enter empty todo!");
-                valid=false;
-            }
-            var emdegree=document.getElementById("inputED").value;
-            if(emdegree=="")
-            {
-                alert("Please give todo an emergency degree!");
-                valid=false;
-            }
-            var imdegree=document.getElementById("inputID").value;
-            if(imdegree=="")
-            {
-                alert("Please give todo an importance degree!");
-                valid=false;
-            }
-            if(!valid) return;
-            emdegree=parseInt(emdegree);
-            if(emdegree<1||emdegree>10)
-            {
-                alert("The emergency degree must be in 1~10!");
-                valid=false;
-            }
-            imdegree=parseInt(imdegree);
-            if(imdegree<1||imdegree>10)
-            {
-                alert("The importance degree must be in 1~10!");
-                valid=false;
-            }
-            if(!valid) return;
-        }
-        document.getElementById("clickTodo").addEventListener("click",todo);
-        var choices=document.getElementsByClassName("choose-tab");
-        var views=document.getElementsByClassName("all-view");
-        for(var i = 0; i < choices.length; i++) {
-			choices[i].index = i;
-			choices[i].onclick = function() {
-				for(var j = 0; j < choices.length; j++) {
-					choices[j].classList.remove("activate");
-				}
-				this.classList.add("activate");
-				for(var k = 0; k < views.length; k++) {
-					views[k].style.display = "none";
-				}
-				views[this.index].style.display = "block";
-			}
-		}
-        var lis = document.getElementsByClassName("filter-tab");
-        for(var i = 0; i < lis.length; i++) {
-			lis[i].index = i;
-			lis[i].onclick = function() {
-				for(var j = 0; j < lis.length; j++) {
-					lis[j].classList.remove("activate");
-				}
-				this.classList.add("activate");
-				// for(var k = 0; k < tabs.length; k++) {
-				// 	tabs[k].style.display = "none";
-				// }
-				// tabs[this.index].style.display = "block";
-			}
-		}
+        //读取最新日期显示日期 
+        document.getElementById("date").innerHTML=year+"-"+month+"-"+day;
+        //初始化总未完成条数显示
+        document.getElementById("itemTxt").innerHTML=thisTimeActive+" items"+" left";
 
+        //由给定ARRAY生成元素
+        function initialWithRecord()
+        {
+            //数据重置
+            thisTimeNum=0;
+            thisTimeActive=0;
+            //清空现有元素
+            var tq=document.getElementById("item-box-overview");
+            while(tq.hasChildNodes()) 
+          {
+            tq.removeChild(tq.firstChild);
+          }
+          
+            for(var p of thisTimeArray)
+            {
+                //闭包保护，否则循环只能取到最后值
+                (function(){
+                    thisTimeNum++;
+                var itemID=thisTimeNum-1;
+            var listItem=document.createElement("div");
+            listItem.setAttribute("class","list-item");
+            if(p.state==="complete")
+            {
+                listItem.classList.add("c");
+            }
+            else
+            {
+                updateItemTxt(1);
+            }
+            listItem.setAttribute("id","t-"+itemID);
+             //左右滑动动画监听
         var x, y, X, Y, swipeX, swipeY;
-        var container=document.getElementById("t1");
-    container.addEventListener('touchstart', function(event) {
+    listItem.addEventListener('touchstart', function(event) {
         x = event.changedTouches[0].pageX;
         y = event.changedTouches[0].pageY;
         swipeX = true;
         swipeY = true ;      
     });
-    container.addEventListener('touchmove', function(event){    	
+    listItem.addEventListener('touchmove', function(event){    	
         X = event.changedTouches[0].pageX;
         Y = event.changedTouches[0].pageY;        
         // 左右滑动
@@ -622,6 +605,721 @@
         }        
     });
 
+            var listItemCheck=document.createElement("input");
+            listItemCheck.setAttribute("type","checkbox");
+            listItemCheck.setAttribute("class","list-item-check");
+            if(p.state==="complete")
+            {
+                listItemCheck.checked=true;
+            }
+            //check监听事件
+            listItemCheck.addEventListener("click",function(){
+                var idss=listItem.getAttribute("id");
+                idss=idss.split("-");
+                console.log("checked "+idss);
+                if(listItem.classList.contains("c"))
+                {
+                    //数据部分
+                    thisTimeArray[parseInt(idss[1])].state="active";
+                    //html部分
+                    listItem.classList.remove("c");
+                    updateItemTxt(1);
+                    if(nowFilter==2)  //complete下不显示
+                    {
+                        listItem.style.display="none";
+                    }
+                }
+                else{
+                    //数据部分
+                    thisTimeArray[parseInt(idss[1])].state="complete";
+                    //html部分
+                    listItem.classList.add("c");
+                    updateItemTxt(-1);
+                    if(nowFilter==1) //active下不显示
+                    {
+                        listItem.style.display="none";
+                    }
+                }
+            });
+            listItem.appendChild(listItemCheck);
+
+            var listItemText=document.createElement("div");
+            listItemText.setAttribute("class","list-item-text");
+            listItemText.innerHTML=p.text;
+            //点击编辑文本事件
+            listItemText.addEventListener("click",function(){
+                var oldValue=this.innerHTML;
+                var oldObject=this;
+                var newInput=document.createElement("input");
+                newInput.setAttribute("class","list-item-text");
+                newInput.setAttribute("type","text");
+                newInput.setAttribute("value",oldValue);
+                newInput.addEventListener("click",function(){
+                    return false;
+                });
+               newInput.select();
+                newInput.addEventListener("blur",function(){
+                    var changeTxt=newInput.value;
+                    if(changeTxt=="")
+                    {
+                        alert("Please do ont enter empty todo!");
+                    }
+                    else{
+                        oldObject.innerHTML=changeTxt;
+                        //数据部分
+                        var idss=listItem.getAttribute("id");
+                        idss=idss.split("-");
+                        thisTimeArray[parseInt(idss[1])].text=changeTxt;
+                    }
+                    this.parentNode.replaceChild(oldObject,this);
+                    listItem.classList.remove("e");
+                });
+                listItem.classList.add("e");
+                this.parentNode.replaceChild(newInput,this);
+            });
+            listItem.appendChild(listItemText);
+
+            var listItemDelete=document.createElement("div");
+            listItemDelete.setAttribute("class","list-item-delete");
+            listItemDelete.innerHTML="X";
+            //删除监听事件
+            listItemDelete.addEventListener("click",function(){
+                //数据部分
+                if(!listItem.classList.contains("c"))
+                {
+                    updateItemTxt(-1);
+                }
+                thisTimeNum--;
+                var idss=listItem.getAttribute("id");
+                idss=idss.split("-");
+                //记录最后一次单独删除的元素
+                latestTxt=thisTimeArray[parseInt(idss[1])].text;
+                latestE=thisTimeArray[parseInt(idss[1])].emdegree;
+                latestI=thisTimeArray[parseInt(idss[1])].imdegree;
+                latestState=thisTimeArray[parseInt(idss[1])].state;
+                latestYear=thisTimeArray[parseInt(idss[1])].year;
+                latestMonth=thisTimeArray[parseInt(idss[1])].month;
+                latestDay=thisTimeArray[parseInt(idss[1])].day;
+                latestTimeStep=timeStep;
+
+                thisTimeArray.splice(parseInt(idss[1]),1);
+               
+
+                //html部分
+                //listItem.parentNode.removeChild(listItem);
+                initialWithRecord();
+                updateFilter();
+            });
+            listItem.appendChild(listItemDelete);
+
+            var listItemImportant=document.createElement("div");
+            listItemImportant.setAttribute("class","list-item-important");
+            listItemImportant.innerHTML="I"+p.imdegree;
+            listItem.appendChild(listItemImportant);
+
+            var listItemEmergency=document.createElement("div");
+            listItemEmergency.setAttribute("class","list-item-emergency");
+            listItemEmergency.innerHTML="E"+p.emdegree;
+            listItem.appendChild(listItemEmergency);
+
+            var itemBox=document.getElementById("item-box-overview");
+            itemBox.insertBefore(listItem,itemBox.firstChild);
+                    
+                })();
+               
+            }
+        }
+
+        //给ADD TODO按钮增加监听事件
+        const todo=function clicktodo(event){
+            if(event==="undelete")
+            {
+                 //由最后一次删除信息创建TODO
+
+                 var newItem={   //数据部分
+                        year:latestYear,
+                        month:latestMonth,
+                        day:latestDay,
+                        text:latestTxt,
+                        emdegree:latestE,
+                        imdegree:latestI,
+                        state:latestState
+                    };
+                if(latestDay!=day||latestMonth!=month||latestYear!=year)  //在其他时间线上删除的todo另外恢复
+                {
+                    console.log("i am data deleted in other time");
+                    var list=JSON.parse(localStorage.dayData);
+                    list[list.length-1+latestTimeStep].record.push(newItem);
+                    localStorage.dayData=JSON.stringify(list); 
+                }
+                else
+                {
+                   
+                    thisTimeNum++;
+                    var itemID=thisTimeNum-1;
+                    thisTimeArray.push(newItem);
+                }
+            }
+            else{
+                var valid=true;
+                //判断当前日期是否为最新日期，若不是则禁止输入
+                var ndate=document.getElementById("date").innerHTML;
+                var ndates=ndate.split("-");
+                if(parseInt(ndates[0])!=year||parseInt(ndates[1])!=month||parseInt(ndates[2])!=day)
+                {
+                    alert("Please go back to the newest date to add todo!");
+                    return;
+                }
+                //判断输入是否合法
+                var newtxt=document.getElementById("inputTodo").value; 
+                if(newtxt=="")
+                {
+                    alert("Please do ont enter empty todo!");
+                    valid=false;
+                }
+                var emdegree=document.getElementById("inputED").value;
+                if(emdegree=="")
+                {
+                    alert("Please give todo an emergency degree!");
+                    valid=false;
+                }
+                var imdegree=document.getElementById("inputID").value;
+                if(imdegree=="")
+                {
+                    alert("Please give todo an importance degree!");
+                    valid=false;
+                }
+                if(!valid) return;
+                emdegree=parseInt(emdegree);
+                if(emdegree<1||emdegree>10)
+                {
+                    alert("The emergency degree must be in 1~10!");
+                    valid=false;
+                }
+                imdegree=parseInt(imdegree);
+                if(imdegree<1||imdegree>10)
+                {
+                    alert("The importance degree must be in 1~10!");
+                    valid=false;
+                }
+                if(!valid) return;
+
+                //输入合法，创建TODO
+
+                var newItem={   //数据部分
+                    year:year,
+                    month:month,
+                    day:day,
+                    text:newtxt,
+                    emdegree:emdegree,
+                    imdegree:imdegree,
+                    state:"active"
+                };
+                thisTimeNum++;
+                var itemID=thisTimeNum-1;
+                thisTimeArray.push(newItem);
+            }
+            updateItemTxt(1);   //html元素部分
+            var listItem=document.createElement("div");
+            listItem.setAttribute("class","list-item");
+            if(newItem.state==="complete")
+            {
+                listItem.classList.add("c");
+            }
+            listItem.setAttribute("id","t-"+itemID);
+             //左右滑动动画监听
+        var x, y, X, Y, swipeX, swipeY;
+    listItem.addEventListener('touchstart', function(event) {
+        x = event.changedTouches[0].pageX;
+        y = event.changedTouches[0].pageY;
+        swipeX = true;
+        swipeY = true ;      
+    });
+    listItem.addEventListener('touchmove', function(event){    	
+        X = event.changedTouches[0].pageX;
+        Y = event.changedTouches[0].pageY;        
+        // 左右滑动
+        if(swipeX && Math.abs(X - x) - Math.abs(Y - y) > 0){
+            // 阻止事件冒泡
+            event.stopPropagation();
+ 
+            if(X - x > 10){   //右滑
+                event.preventDefault();
+                this.classList.remove("swipeleft");    //右滑收起
+            }
+            if(x - X > 10){   //左滑
+                event.preventDefault();                
+                var swipeLeft = document.getElementsByClassName("swipeleft");
+                for(var j = 0; j < swipeLeft.length; j++){
+                	swipeLeft[j].classList.remove("swipeleft");
+                }
+                this.classList.add("swipeleft");   //左滑展开
+            }
+            swipeY = false;
+        }
+        // 上下滑动
+        if(swipeY && Math.abs(X - x) - Math.abs(Y - y) < 0) {
+            swipeX = false;
+        }        
+    });
+
+            var listItemCheck=document.createElement("input");
+            listItemCheck.setAttribute("type","checkbox");
+            listItemCheck.setAttribute("class","list-item-check");
+            //check监听事件
+            listItemCheck.addEventListener("click",function(){
+                var idss=listItem.getAttribute("id");
+                idss=idss.split("-");
+                if(listItem.classList.contains("c"))
+                {
+                    //数据部分
+                    thisTimeArray[parseInt(idss[1])].state="active";
+                    //html部分
+                    listItem.classList.remove("c");
+                    updateItemTxt(1);
+                    if(nowFilter==2)  //complete下不显示
+                    {
+                        listItem.style.display="none";
+                    }
+                }
+                else{
+                    //数据部分
+                    thisTimeArray[parseInt(idss[1])].state="complete";
+                    //html部分
+                    listItem.classList.add("c");
+                    updateItemTxt(-1);
+                    if(nowFilter==1) //active下不显示
+                    {
+                        listItem.style.display="none";
+                    }
+                }
+            });
+            listItem.appendChild(listItemCheck);
+
+            var listItemText=document.createElement("div");
+            listItemText.setAttribute("class","list-item-text");
+            listItemText.innerHTML=newItem.text;
+            //点击编辑文本事件
+            listItemText.addEventListener("click",function(){
+                var oldValue=this.innerHTML;
+                var oldObject=this;
+                var newInput=document.createElement("input");
+                newInput.setAttribute("class","list-item-text");
+                newInput.setAttribute("type","text");
+                newInput.setAttribute("value",oldValue);
+                newInput.addEventListener("click",function(){
+                    return false;
+                });
+               newInput.select();
+                newInput.addEventListener("blur",function(){
+                    var changeTxt=newInput.value;
+                    if(changeTxt=="")
+                    {
+                        alert("Please do ont enter empty todo!");
+                    }
+                    else{
+                        oldObject.innerHTML=changeTxt;
+                        //数据部分
+                        var idss=listItem.getAttribute("id");
+                        idss=idss.split("-");
+                        thisTimeArray[parseInt(idss[1])].text=changeTxt;
+                    }
+                    this.parentNode.replaceChild(oldObject,this);
+                    listItem.classList.remove("e");
+                });
+                listItem.classList.add("e");
+                this.parentNode.replaceChild(newInput,this);
+            });
+            listItem.appendChild(listItemText);
+
+            var listItemDelete=document.createElement("div");
+            listItemDelete.setAttribute("class","list-item-delete");
+            listItemDelete.innerHTML="X";
+            //删除监听事件
+            listItemDelete.addEventListener("click",function(){
+                //数据部分
+                if(!listItem.classList.contains("c"))
+                {
+                    updateItemTxt(-1);
+                }
+                thisTimeNum--;
+                var idss=listItem.getAttribute("id");
+                idss=idss.split("-");
+                //记录最后一次单独删除的元素
+                latestTxt=thisTimeArray[parseInt(idss[1])].text;
+                latestE=thisTimeArray[parseInt(idss[1])].emdegree;
+                latestI=thisTimeArray[parseInt(idss[1])].imdegree;
+                latestState=thisTimeArray[parseInt(idss[1])].state;
+                latestYear=thisTimeArray[parseInt(idss[1])].year;
+                latestMonth=thisTimeArray[parseInt(idss[1])].month;
+                latestDay=thisTimeArray[parseInt(idss[1])].day;
+                latestTimeStep=timeStep;
+
+                thisTimeArray.splice(parseInt(idss[1]),1);
+                initialWithRecord();
+                updateFilter();
+
+                //html部分
+               // listItem.parentNode.removeChild(listItem);
+            });
+            listItem.appendChild(listItemDelete);
+
+            var listItemImportant=document.createElement("div");
+            listItemImportant.setAttribute("class","list-item-important");
+            listItemImportant.innerHTML="I"+newItem.imdegree;
+            listItem.appendChild(listItemImportant);
+
+            var listItemEmergency=document.createElement("div");
+            listItemEmergency.setAttribute("class","list-item-emergency");
+            listItemEmergency.innerHTML="E"+newItem.emdegree;
+            listItem.appendChild(listItemEmergency);
+
+            //跳回到主页面
+            if(nowView==1)
+            {
+                choices[0].onclick();
+            }
+            if(nowFilter==2)//complete里不展示
+            {
+                listItem.style.display="none";
+            }
+
+            var itemBox=document.getElementById("item-box-overview");
+            itemBox.insertBefore(listItem,itemBox.firstChild);
+
+            //清空输入框
+            document.getElementById("inputTodo").value="";
+            document.getElementById("inputED").value="";
+            document.getElementById("inputID").value="";
+           
+        }
+        document.getElementById("clickTodo").addEventListener("click",todo);
+        //选择视图切换：overview 4-quadrant-view
+        var choices=document.getElementsByClassName("choose-tab");
+        var views=document.getElementsByClassName("all-view");
+        for(var i = 0; i < choices.length; i++) {
+			choices[i].index = i;
+			choices[i].onclick = function() {
+				for(var j = 0; j < choices.length; j++) {
+					choices[j].classList.remove("activate");
+				}
+				this.classList.add("activate");
+				for(var k = 0; k < views.length; k++) {
+					views[k].style.display = "none";
+				}
+                nowView=this.index;
+				views[this.index].style.display = "block";
+                updateView();
+			}
+		}
+        //选择查看切换：all active completed
+        var lis = document.getElementsByClassName("filter-tab");
+        for(var i = 0; i < lis.length; i++) {
+			lis[i].index = i;
+			lis[i].onclick = function() {
+				for(var j = 0; j < lis.length; j++) {
+					lis[j].classList.remove("activate");
+				}
+				this.classList.add("activate");
+                nowFilter=this.index;
+				updateFilter();
+			}
+		}
+        
+    //update 未完成条目数显示
+    function updateItemTxt(i)
+    {
+        thisTimeActive+=i;
+        document.getElementById("itemTxt").innerHTML=thisTimeActive+" items"+" left";
+    }
+
+    //update 切换filter显示
+    function updateFilter()
+    {
+        var allItem=document.querySelectorAll(".list-item");
+        if(nowFilter==0)
+        {
+            for(var p of allItem)
+            {
+                p.style.display="block";
+            }
+        }
+        else if(nowFilter==1)
+        {
+            for(var p of allItem)
+            {
+                if(p.classList.contains("c"))
+                {
+                    p.style.display="none";
+                }
+                else{
+                    p.style.display="block";
+                }
+            }
+        }
+        else if(nowFilter==2)
+        {
+            for(var p of allItem)
+            {
+                if(p.classList.contains("c"))
+                {
+                    p.style.display="block";
+                }
+                else{
+                    p.style.display="none";
+                }
+            }
+        }
+    }
+
+    //all done按钮添加监听
+    document.getElementById("ad").addEventListener("click",function(){
+        //数据部分
+        for(var p of thisTimeArray)
+        {
+            p.state="complete";
+        }
+        thisTimeActive=0;
+        updateItemTxt(0);
+
+        //页面部分
+        var allItem=document.querySelectorAll(".list-item");
+        for(var p of allItem)
+        {
+            if(!p.classList.contains("c"))
+            p.classList.add("c");
+        }
+        updateFilter();
+    });
+
+    //all undone按钮添加监听
+    document.getElementById("au").addEventListener("click",function(){
+        //数据部分
+        for(var p of thisTimeArray)
+        {
+            p.state="active";
+        }
+        thisTimeActive=thisTimeNum;
+        updateItemTxt(0);
+
+        //页面部分
+        var allItem=document.querySelectorAll(".list-item");
+        for(var p of allItem)
+        {
+            if(p.classList.contains("c"))
+            p.classList.remove("c");
+        }
+        updateFilter();
+    });
+    
+    //clear done按钮添加监听
+    document.getElementById("cd").addEventListener("click",function(){
+        //数据部分
+        for(var i=thisTimeArray.length-1;i>=0;i--){
+            if(thisTimeArray[i].state=="complete")
+            {
+                thisTimeArray.splice(i,1);
+                thisTimeNum--;
+            }
+        }
+
+        //页面部分
+        var allItem=document.querySelectorAll(".list-item");
+        for(var p of allItem)
+        {
+            if(p.classList.contains("c"))
+            p.parentNode.removeChild(p);
+        }
+        initialWithRecord();
+        updateFilter();
+    });
+
+    //恢复最后一次单独删除的元素
+    document.getElementById("undoButton").addEventListener("click",function(){
+        if(latestTxt=="")
+        {
+            alert("You haven't deleted a single todo!");
+        }
+        else{
+            todo("undelete");
+        }
+
+    });
+
+    //update 切换到4-quadrant view
+    function updateView()
+    {
+        var firstq=document.getElementById("firstQuadrant");
+            var secondq=document.getElementById("secondQuadrant");
+            var thirdq=document.getElementById("thirdQuadrant");
+            var fourthq=document.getElementById("fourthQuadrant");
+
+        while(firstq.hasChildNodes()) 
+          {
+            firstq.removeChild(firstq.firstChild);
+          }
+          while(secondq.hasChildNodes()) 
+          {
+            secondq.removeChild(secondq.firstChild);
+          }
+          while(thirdq.hasChildNodes()) 
+          {
+            thirdq.removeChild(thirdq.firstChild);
+          }
+          while(fourthq.hasChildNodes()) 
+          {
+            fourthq.removeChild(fourthq.firstChild);
+          }
+         
+
+        for(var p of thisTimeArray)
+        {
+            //循环保护
+            (function(){
+             if(p.state==="active")
+            {
+              
+
+            var newElement=document.createElement("div");
+            newElement.setAttribute("class","quadrant-item");
+
+            var qtext=document.createElement("div");
+            qtext.setAttribute("class","quadrant-item-text");
+            qtext.innerHTML=p.text;
+            newElement.appendChild(qtext);
+
+            var qi=document.createElement("div");
+            qi.setAttribute("class","quadrant-item-important");
+            qi.innerHTML="I"+p.imdegree;
+            newElement.appendChild(qi);
+
+            var qe=document.createElement("div");
+            qe.setAttribute("class","quadrant-item-emergency");
+            qe.innerHTML="E"+p.emdegree;
+            newElement.appendChild(qe);
+
+            if(p.emdegree>5&&p.imdegree>5)
+            {
+                firstq.appendChild(newElement);
+                return;
+            }
+            if(p.emdegree>5&&p.imdegree<=5)
+            {
+                secondq.appendChild(newElement);
+                return;
+            }
+            if(p.imdegree>5&&p.emdegree<=5)
+            {
+                fourthq.appendChild(newElement);
+                return;
+            }
+            thirdq.appendChild(newElement);
+            }
+            })();
+           
+           
+        }
+    }
+
+    //时间线变动：前一天
+    document.getElementById("preDate").addEventListener("click",function(){
+        var list=JSON.parse(localStorage.dayData);
+        var move=timeStep-1;
+        if(list.length-1+move<0)
+        {
+            alert("No more records before!");
+            return;
+        }
+        else{
+            //重要：每次切换时间都保存当前时间下的数据
+            currentPageSave();
+            //数据部分
+            timeStep=move;
+            var nowtimeindex=list.length-1+timeStep;
+           
+            thisTimeArray=list[nowtimeindex].record;
+            
+            //更改现在时间
+            document.getElementById("date").innerHTML=list[nowtimeindex].year+"-"+list[nowtimeindex].month+"-"+list[nowtimeindex].day;
+            
+            initialWithRecord();
+            updateFilter();
+
+        }
+
+    });
+
+     //时间线变动：后一天
+     document.getElementById("nextDate").addEventListener("click",function(){
+        var list=JSON.parse(localStorage.dayData);
+        var move=timeStep+1;
+        if(list.length-1+move>=list.length)
+        {
+            alert("No more records after!");
+            return;
+        }
+        else{
+            //重要：每次切换时间都保存当前时间下的数据
+            currentPageSave();
+            //数据部分
+            timeStep=move;
+            var nowtimeindex=list.length-1+timeStep;
+            thisTimeArray=list[nowtimeindex].record;
+            
+            //更改现在时间
+            document.getElementById("date").innerHTML=list[nowtimeindex].year+"-"+list[nowtimeindex].month+"-"+list[nowtimeindex].day;
+            initialWithRecord();
+            updateFilter();
+
+        }
+
+});
+
+//保存某时间下数据
+function currentPageSave()
+{
+    if(timeStep==0)
+    {
+        console.log("now i am saving");
+        var saveDate={
+            year:year,
+            month:month,
+            day:day,
+            record:thisTimeArray
+        };
+        var list=JSON.parse(localStorage.dayData);
+        if(list.length!=0)
+        {
+            if(list[list.length-1].day===day&&list[list.length-1].month===month&&list[list.length-1].year===year)
+                {
+                   list.pop();
+                   list.push(saveDate);  //更新同一天数据
+                }
+                else
+                {
+                    list.push(saveDate);
+                }
+        }
+        else{
+            list.push(saveDate);
+        }
+       
+        localStorage.dayData=JSON.stringify(list);     
+
+    }
+    else{
+        console.log("now i am saving not today's data");
+        var list=JSON.parse(localStorage.dayData);
+        list[list.length-1+timeStep].record=thisTimeArray;
+       
+        localStorage.dayData=JSON.stringify(list);     
+    }
+}
+    //刷新或关闭时保存数据
+    window.onunload=function(){
+       currentPageSave(); 
+       
+    }
     </script>
 </body>
 </html>
