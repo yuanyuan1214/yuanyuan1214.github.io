@@ -1195,6 +1195,10 @@
             var secondq = document.getElementById("secondQuadrant");
             var thirdq = document.getElementById("thirdQuadrant");
             var fourthq = document.getElementById("fourthQuadrant");
+            var fi = 0;
+            var si = 0;
+            var ti = 0;
+            var foi = 0;
 
             while (firstq.hasChildNodes()) {
                 firstq.removeChild(firstq.firstChild);
@@ -1211,6 +1215,7 @@
 
 
             for (var p of thisTimeArray) {
+
                 //循环保护
                 (function () {
                     if (p.state === "active") {
@@ -1236,22 +1241,32 @@
 
                         if (p.emdegree > 5 && p.imdegree > 5) {
                             firstq.appendChild(newElement);
-                            return;
+                            fi++;
                         }
                         if (p.emdegree > 5 && p.imdegree <= 5) {
                             secondq.appendChild(newElement);
-                            return;
+                            si++;
                         }
                         if (p.imdegree > 5 && p.emdegree <= 5) {
                             fourthq.appendChild(newElement);
-                            return;
+                            foi++;
                         }
-                        thirdq.appendChild(newElement);
+                        if (p.imdegree <= 5 && p.emdegree <= 5) {
+                            thirdq.appendChild(newElement);
+                            ti++;
+                        }
+
                     }
                 })();
 
 
             }
+
+            //更新数量显示
+            document.getElementById("q1Txt").innerHTML = fi + " items";
+            document.getElementById("q2Txt").innerHTML = si + " items";
+            document.getElementById("q3Txt").innerHTML = ti + " items";
+            document.getElementById("q4Txt").innerHTML = foi + " items";
         }
 
         //时间线变动：前一天
