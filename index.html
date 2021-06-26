@@ -932,6 +932,9 @@
             var listItemCheck = document.createElement("input");
             listItemCheck.setAttribute("type", "checkbox");
             listItemCheck.setAttribute("class", "list-item-check");
+            if (newItem.state === "complete") {
+                listItemCheck.checked=true;
+            }
             //check监听事件
             listItemCheck.addEventListener("click", function () {
                 var idss = listItem.getAttribute("id");
