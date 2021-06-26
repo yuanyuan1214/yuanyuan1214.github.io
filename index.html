@@ -1136,7 +1136,7 @@
             for (var p of allItem) {
                 if (!p.classList.contains("c"))
                     p.classList.add("c");
-                    p.getElementsByClassName("list-item-check").checked=true;
+                    p.getElementsByClassName("list-item-check")[0].checked=true;
             }
             updateFilter();
         });
@@ -1155,7 +1155,7 @@
             for (var p of allItem) {
                 if (p.classList.contains("c"))
                     p.classList.remove("c");
-                    p.getElementsByClassName("list-item-check").checked=false;
+                    p.getElementsByClassName("list-item-check")[0].checked=false;
             }
             updateFilter();
         });
