@@ -315,7 +315,7 @@
             cursor: pointer;
             color: rgb(128, 122, 122);
             text-decoration: none;
-            margin-left: 1rem;
+            margin-left: 0rem;
 
         }
 
@@ -1136,6 +1136,7 @@
             for (var p of allItem) {
                 if (!p.classList.contains("c"))
                     p.classList.add("c");
+                    p.getElementsByClassName("list-item-check").checked=true;
             }
             updateFilter();
         });
@@ -1154,6 +1155,7 @@
             for (var p of allItem) {
                 if (p.classList.contains("c"))
                     p.classList.remove("c");
+                    p.getElementsByClassName("list-item-check").checked=false;
             }
             updateFilter();
         });
