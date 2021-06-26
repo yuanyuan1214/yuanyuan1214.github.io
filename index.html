@@ -818,7 +818,7 @@
                 };
                 var ndate = document.getElementById("date").innerHTML;
                 var ndates = ndate.split("-");
-                if (latestDay != ndates[0] || latestMonth != ndates[1] || latestYear != ndates[2])  //在其他时间线上删除的todo另外恢复
+                if (latestDay != ndates[2] || latestMonth != ndates[1] || latestYear != ndates[0])  //在其他时间线上删除的todo另外恢复
                 {
                     console.log("i am data deleted in other time");
                     var list = JSON.parse(localStorage.dayData);
